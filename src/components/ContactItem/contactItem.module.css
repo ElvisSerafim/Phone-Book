@@ -1,0 +1,47 @@
+.contact-wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: #ffffff;
+  cursor: pointer;
+  border: 1px solid #d2d6db;
+  border-width: 0 1px 1px 1px;
+}
+
+.contact-phone {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  margin-top: 10px;
+}
+
+.contact-delete {
+  background: #cb444a;
+  padding: 12px;
+  align-items: center;
+  display: flex;
+  border-radius: 5px;
+  max-height: 45px;
+  cursor: pointer;
+}
+
+.contact-number {
+  color: #a6a6a6;
+  font-weight: 600;
+}
+
+.contact-name {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+
+  @media screen and (max-width: 434px) {
+    max-width: 160px;
+    word-break: break-word;
+  }
+}
