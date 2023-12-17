@@ -16,7 +16,7 @@ The project can be accessed without the need to run it locally. I deployed the b
 
 Access link: https://phone-book-frontend-igjszjkrb-elvisserafim.vercel.app/
 
-### Requirements (Running Locally)
+### Requirements
 
 Before you begin, you'll need to have the following tools installed on your machine:
 [Git](https://git-scm.com) and [Docker](https://www.docker.com/).
