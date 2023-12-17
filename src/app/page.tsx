@@ -1,95 +1,153 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+
+import Button from "@/components/Button";
+import styles from "./page.module.css";
+import plusIcon from "../../public/icons/plus.svg";
+import phoneHeader from "../../public/icons/phone-header.svg";
+import SearchInput from "@/components/SearchInput";
+import { useCallback, useEffect, useState } from "react";
+import ContactItem from "@/components/ContactItem";
+import Modal from "@/components/Modal";
+import Form from "@/components/Form";
+import Pagination from "@/components/Pagination";
+import { apiFetch } from "@/service/api";
+import { Contact } from "@/utils/interfaces";
+import { FormContact } from "@/components/Form/form.utils";
+import Image from "next/image";
+
+const SIZE = 4;
 
 export default function Home() {
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [countContacts, setCountContacts] = useState(0);
+  const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
+  const [search, setSearch] = useState("");
+  const [isOpenEditModal, setIsOpenEditModal] = useState(false);
+  const [isOpenAddModal, setIsOpenAddModal] = useState(false);
+  const [selectedContact, setSelectedContact] = useState<Contact>();
+
+  const [page, setPage] = useState(0);
+
+  const getContacts = async () => {
+    try {
+      const contactsData = await apiFetch(`?page=${page}`, "GET");
+      setCountContacts(contactsData.count);
+      setContacts(contactsData.contacts);
+      setFilteredContacts(contactsData.contacts);
+    } catch (error) {}
+  };
+
+  const openAddModal = () => {
+    setIsOpenAddModal(true);
+  };
+
+  const deleteContact = async (contactId: string) => {
+    try {
+      await apiFetch("deleteContact", "DELETE", { id: contactId });
+      getContacts();
+    } catch (error) {}
+  };
+
+  const searchContact = useCallback(() => {
+    const searchedContactArray = contacts.filter((item) =>
+      item.lastName.includes(search)
+    );
+    setFilteredContacts(searchedContactArray);
+  }, [search]);
+
+  const updateContact = async (toUpdateContact: FormContact) => {
+    try {
+      await apiFetch("updateContact", "PUT", toUpdateContact);
+      getContacts();
+      setIsOpenEditModal(false);
+    } catch (error) {}
+  };
+
+  const createContact = async (toCreateContact: FormContact) => {
+    try {
+      await apiFetch("createContact", "POST", toCreateContact);
+      getContacts();
+      setIsOpenAddModal(false);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getContacts();
+  }, [page]);
+
+  useEffect(() => {
+    searchContact();
+  }, [search]);
+
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+      <div className={styles.wrapper}>
+        <div className={styles["phone-header"]}>
+          <Image
+            alt="phone book icon"
+            src={phoneHeader}
+            width={30}
+            height={30}
+          />
+          <h2>Phone Book App</h2>
         </div>
-      </div>
+        <div className={styles["header-content"]}>
+          <h2>Contacts</h2>
+          <Button
+            icon={plusIcon}
+            onClick={openAddModal}
+            text="Add Contact"
+          ></Button>
+        </div>
+        <SearchInput search={search} setSearch={setSearch} />
+        {contacts.length === 0 ? (
+          <div className={styles["empty-list"]}>
+            <h3>Add a Contact in your Book.</h3>
+          </div>
+        ) : (
+          <div className={styles["list-contact"]}>
+            {filteredContacts.map((contact) => {
+              return (
+                <div key={contact.id}>
+                  <ContactItem
+                    onSelectContact={(selectContact) => {
+                      setSelectedContact(selectContact);
+                      setIsOpenEditModal(true);
+                    }}
+                    deleteContact={deleteContact}
+                    contact={contact}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+        <Pagination
+          page={page}
+          setPage={setPage}
+          size={SIZE}
+          total={search !== "" ? filteredContacts.length : countContacts}
         />
       </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+      <Modal
+        isOpen={isOpenAddModal}
+        setIsOpen={setIsOpenAddModal}
+        title="Add Contact"
+      >
+        <Form mode="add" onSubmitForm={createContact} />
+      </Modal>
+      <Modal
+        isOpen={isOpenEditModal}
+        setIsOpen={setIsOpenEditModal}
+        title="Edit Contact"
+      >
+        <Form
+          mode="edit"
+          onSubmitForm={updateContact}
+          contact={selectedContact}
+        />
+      </Modal>
     </main>
-  )
+  );
 }
