@@ -11,7 +11,7 @@ services:
 
   phone-book-app:
     build:
-      context: ./phone-book-app
+      context: ./phone-book-frontend
     ports:
       - "3000:3000"
     depends_on:
