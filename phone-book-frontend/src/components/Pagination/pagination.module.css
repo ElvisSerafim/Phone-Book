@@ -1,0 +1,42 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 20px;
+  list-style: none;
+
+  @media screen and (max-width: 434px) {
+    gap: 10px;
+    font-size: 12px;
+  }
+}
+
+.pagination .page-number,
+.actions {
+  font-size: 16px;
+  font-weight: 600;
+  color: #347bf6;
+  background: #fff;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  display: flex;
+  justify-content: center;
+
+  @media screen and (max-width: 434px) {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+}
+
+.pagination .page-number:hover {
+  color: #fff;
+  background: #347bf6;
+}
+
+.pagination .active {
+  color: #fff;
+  background: #347bf6;
+}

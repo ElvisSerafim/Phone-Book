@@ -1,0 +1,26 @@
+.button-wrapper {
+  background: #347bf6;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-width: 100px;
+  justify-content: space-around;
+  padding: 12px 20px 12px 20px;
+  border-radius: 5px;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.add-icon {
+  margin-bottom: 2px;
+}
+
+.button {
+  border: 0;
+  color: inherit;
+  font-weight: 600;
+  font-size: 1rem;
+  background: transparent;
+  cursor: pointer;
+}
