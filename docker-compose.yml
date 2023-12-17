@@ -1,0 +1,24 @@
+version: "3.5"
+
+services:
+  phone-book-backend:
+    build:
+      context: ./phone-book-backend
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+  phone-book-app:
+    build:
+      context: ./phone-book-app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - phone-book-backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
